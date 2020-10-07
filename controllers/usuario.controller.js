@@ -3,10 +3,17 @@ const bcrypt = require('bcryptjs');
 const UsuarioM = require('../models/usuario.model');
 const { generarJWT } = require('../helpers/jwt');
 getUsuarios = async(req, res) => {
-    const ListUsuario = await UsuarioM.find({}, 'nombres apellidoP apellidoM email');
+    const desde = Number(req.query.desde) || 0;
+    const [ListUsuario, total] = await Promise.all([
+        UsuarioM.find({}, 'nombres apellidoP apellidoM email img')
+        .skip(desde)
+        .limit(5),
+        UsuarioM.count()
+    ]);
     res.json({
         ok: true,
-        ListUsuario
+        ListUsuario,
+        total
     });
 };
 postUsuarios = async(req, res = response) => {

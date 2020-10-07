@@ -18,6 +18,13 @@ dbConnection();
 //Rutas
 app.use('/api/usuarios', require('./routes/usuario.router'));
 app.use('/api/login', require('./routes/auth.router'));
+app.use('/api/hospitales', require('./routes/hospitales.router'));
+app.use('/api/medicos', require('./routes/medicos.router'));
+app.use('/api/todo', require('./routes/busquedas.router'));
+app.use('/api/upload', require('./routes/uploads.router'));
+
+
+app.use('/api/constante', require('./routes/constante.router')); //pruebas para lo de Pool Eliminar luego
 
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en el puerto', process.env.PORT);
