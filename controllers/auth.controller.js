@@ -2,6 +2,7 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const UsuarioM = require('../models/usuario.model');
 const { generarJWT } = require('../helpers/jwt');
+const { googleverify } = require('../helpers/google-login');
 
 
 
@@ -39,7 +40,44 @@ login = async(req, res = response) => {
     }
 };
 
+google = async(req, res = response) => {
+    const gooleToken = req.body.token;
+    try {
+        const { name, email, picture } = await googleverify(gooleToken);
+        const UsuarioDB = await UsuarioM.findOne({ email });
+        let usuarioData;
+        if (!UsuarioDB) {
+            //No existe usuario
+            usuarioData = new UsuarioM({
+                nombres: name,
+                email,
+                clave: '',
+                img: picture,
+                google: true
+            });
+        } else {
+            //Existe usuario
+            usuarioData = UsuarioDB;
+            usuarioData.google = true;
+        }
+        //Guardar en BD
+        await usuarioData.save();
+        //Generar Token (Json Web Token = JWT)
+        const token = await generarJWT(usuarioData.id);
+        res.json({
+            ok: true,
+            token
+        });
+    } catch (error) {
+        res.status(401).json({
+            ok: false,
+            msg: 'Token incorrecto comuniquese con el administrador del sistema'
+        });
+    }
+};
+
 
 module.exports = {
     login,
+    google
 };
