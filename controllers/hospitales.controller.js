@@ -30,17 +30,56 @@ postHospitales = async(req, res = response) => {
         });
     }
 };
-putHospitales = async(req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'actualizar'
-    });
+const putHospitales = async(req, res = response) => {
+    const id = req.params.id;
+    const uid = req.uid;
+    try {
+        const HospitalData = await HospitalesM.findById(id);
+        if (!HospitalData) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Hospital no encontrado'
+            });
+        }
+        const ActualizarHospital = {
+            ...req.body,
+            usuario: uid
+        };
+        const hospitalDB = await HospitalesM.findByIdAndUpdate(id, ActualizarHospital, { new: true });
+        // console.log(hospitalDB);
+        res.json({
+            ok: true,
+            hospital: hospitalDB
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Comuniquese con el administrador'
+        });
+    }
 };
 deleteHospitales = async(req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'eliminar'
-    });
+    const id = req.params.id;
+    try {
+        const HospitalData = await HospitalesM.findById(id);
+        if (!HospitalData) {
+            return res.status(404).json({
+                ok: true,
+                msg: 'Hospital no encontrado'
+            });
+        }
+        const hospitalDB = await HospitalesM.findByIdAndDelete(id);
+        // console.log(hospitalDB);
+        res.json({
+            ok: true,
+            msg: 'Hospital eliminado'
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Comuniquese con el administrador'
+        });
+    }
 };
 module.exports = {
     getHospitales,

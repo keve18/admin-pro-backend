@@ -75,9 +75,18 @@ google = async(req, res = response) => {
         });
     }
 };
-
+const renovarToken = async(req, res = response) => {
+    const uid = req.uid;
+    //Generar Token (Json Web Token = JWT)
+    const tokenNew = await generarJWT(uid);
+    res.json({
+        ok: true,
+        tokenNew
+    });
+};
 
 module.exports = {
     login,
-    google
+    google,
+    renovarToken
 };

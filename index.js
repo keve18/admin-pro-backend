@@ -21,6 +21,7 @@ app.use(express.static('public'));
 app.use('/api/usuarios', require('./routes/usuario.router'));
 app.use('/api/login', require('./routes/auth.router'));
 app.use('/api/login/google', require('./routes/auth.router'));
+app.use('/api/login/expirartoken', require('./routes/auth.router'));
 app.use('/api/hospitales', require('./routes/hospitales.router'));
 app.use('/api/medicos', require('./routes/medicos.router'));
 app.use('/api/todo', require('./routes/busquedas.router'));
